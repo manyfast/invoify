@@ -120,8 +120,6 @@ All of these are optional; the app runs without them, minus the features they en
 
 | Variable | Required for | Notes |
 | --- | --- | --- |
-| `NODEMAILER_EMAIL` | Sending invoices by email | The Gmail address that sends the mail. |
-| `NODEMAILER_PW` | Sending invoices by email | A [Gmail **App Password**](https://support.google.com/accounts/answer/185833), **not** your account password. Requires 2-Step Verification. |
 
 ## Development
 

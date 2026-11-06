@@ -28,7 +28,6 @@ export const AUTHOR_GITHUB = "https://github.com/al1abb";
  * API endpoints
  */
 export const GENERATE_PDF_API = "/api/invoice/generate";
-export const SEND_PDF_API = "/api/invoice/send";
 export const EXPORT_INVOICE_API = "/api/invoice/export";
 export const WARM_BROWSER_API = "/api/invoice/warm";
 
@@ -60,12 +59,6 @@ export const TAILWIND_CDN =
  * Google
  */
 export const GOOGLE_SC_VERIFICATION = process.env.GOOGLE_SC_VERIFICATION;
-
-/**
- * Nodemailer
- */
-export const NODEMAILER_EMAIL = process.env.NODEMAILER_EMAIL;
-export const NODEMAILER_PW = process.env.NODEMAILER_PW;
 
 /**
  * I18N

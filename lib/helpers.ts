@@ -1,6 +1,3 @@
-// Next
-import { NextResponse } from "next/server";
-
 // Utils
 import numberToWords from "number-to-words";
 
@@ -147,18 +144,6 @@ const flattenObject = <T>(
 };
 
 /**
- * A method to validate an email address
- *
- * @param {string} email - Email to validate
- * @returns {boolean} A boolean indicating if the email is valid
- */
-const isValidEmail = (email: string) => {
-    // Regular expression for a simple email pattern
-    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    return emailRegex.test(email);
-};
-
-/**
  * A method to check if a string is a data URL
  *
  * @param {string} str - String to check
@@ -195,21 +180,6 @@ const getInvoiceTemplate = async (templateId: number) => {
         console.error(`Error importing template ${entry.name}: ${err}`);
         return null;
     }
-};
-
-/**
- * Convert a file to a buffer. Used for sending invoice as email attachment.
- * @param {File} file - The file to convert to a buffer.
- * @returns {Promise<Buffer>} A promise that resolves to a buffer.
- */
-const fileToBuffer = async (file: File) => {
-    // Convert Blob to ArrayBuffer
-    const arrayBuffer = await new NextResponse(file).arrayBuffer();
-
-    // Convert ArrayBuffer to Buffer
-    const pdfBuffer = Buffer.from(arrayBuffer);
-
-    return pdfBuffer;
 };
 
 /**
@@ -290,8 +260,6 @@ export {
     formatDate,
     formatPriceToString,
     flattenObject,
-    isValidEmail,
     isDataUrl,
     getInvoiceTemplate,
-    fileToBuffer,
 };
