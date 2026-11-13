@@ -7,7 +7,7 @@ import type { InvoiceType } from "@/types";
  * run of digits in the most recent number and increments it, keeping the
  * prefix, the suffix and the zero padding. So `INV0007` becomes `INV0008`,
  * `2026-14` becomes `2026-15`, and `7` becomes `8`. If there is nothing to go
- * on, it starts at `INV0001`.
+ * on, it starts at `INV-0001`.
  *
  * The result is only ever a *suggestion*. The field stays a normal editable
  * input — an invoice number is a legal identifier and people have their own
@@ -16,7 +16,7 @@ import type { InvoiceType } from "@/types";
  */
 const TRAILING_DIGITS = /^(.*?)(\d+)(\D*)$/;
 
-export const FALLBACK_INVOICE_NUMBER = "INV0001";
+export const FALLBACK_INVOICE_NUMBER = "INV-0001";
 
 export function incrementInvoiceNumber(previous: string): string {
     const match = previous.trim().match(TRAILING_DIGITS);
