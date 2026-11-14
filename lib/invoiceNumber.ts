@@ -19,11 +19,12 @@ const TRAILING_DIGITS = /^(.*?)(\d+)(\D*)$/;
 export const FALLBACK_INVOICE_NUMBER = "INV-0001";
 
 export function incrementInvoiceNumber(previous: string): string {
-    const match = previous.trim().match(TRAILING_DIGITS);
+    const trimmed = previous.trim();
+    const match = trimmed.match(TRAILING_DIGITS);
     if (!match) {
         // No digits anywhere — appending one is more useful than replacing
         // whatever scheme the user has.
-        return previous.trim() ? `${previous.trim()}-2` : FALLBACK_INVOICE_NUMBER;
+        return trimmed ? `${trimmed}-2` : FALLBACK_INVOICE_NUMBER;
     }
 
     const [, prefix, digits, suffix] = match;
