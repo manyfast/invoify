@@ -22,9 +22,9 @@ export function incrementInvoiceNumber(previous: string): string {
     const trimmed = previous.trim();
     const match = trimmed.match(TRAILING_DIGITS);
     if (!match) {
-        // No digits anywhere — appending one is more useful than replacing
+        // No digits anywhere — appending -1 is more useful than replacing
         // whatever scheme the user has.
-        return trimmed ? `${trimmed}-2` : FALLBACK_INVOICE_NUMBER;
+        return trimmed ? `${trimmed}-1` : FALLBACK_INVOICE_NUMBER;
     }
 
     const [, prefix, digits, suffix] = match;
