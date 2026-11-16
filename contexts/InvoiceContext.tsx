@@ -65,7 +65,6 @@ const defaultInvoiceContext = {
   saveInvoice: () => {},
   deleteInvoice: (index: number) => {},
   exportInvoiceAs: (exportAs: ExportTypes) => {},
-  importInvoice: (file: File) => {},
 };
 
 export const InvoiceContext = createContext(defaultInvoiceContext);
@@ -92,7 +91,6 @@ export const InvoiceContextProvider = ({
     modifiedInvoiceSuccess,
     pdfGenerationError,
     exportInvoiceError,
-    importInvoiceError,
   } = useToasts();
 
   // Get form values and methods from form context
@@ -421,52 +419,6 @@ export const InvoiceContextProvider = ({
     });
   };
 
-  /**
-   * Import an invoice from a JSON file.
-   *
-   * @param {File} file - The JSON file to import.
-   */
-  const importInvoice = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const importedData = JSON.parse(event.target?.result as string);
-
-        // Parse the dates
-        if (importedData.details) {
-          if (importedData.details.invoiceDate) {
-            importedData.details.invoiceDate = new Date(
-              importedData.details.invoiceDate
-            );
-          }
-          if (importedData.details.dueDate) {
-            importedData.details.dueDate = new Date(
-              importedData.details.dueDate
-            );
-          }
-        }
-
-        /*
-         * Validate before resetting. This file is arbitrary user input, and an
-         * unvalidated reset() put malformed shapes straight into form state,
-         * which then flowed on to the PDF, export and email services.
-         */
-        const validated = InvoiceSchema.safeParse(importedData);
-        if (!validated.success) {
-          console.error("Invalid invoice file:", validated.error.issues);
-          importInvoiceError();
-          return;
-        }
-
-        // Reset form with imported data
-        reset(importedData);
-      } catch (error) {
-        console.error("Error parsing JSON file:", error);
-        importInvoiceError();
-      }
-    };
-    reader.readAsText(file);
-  };
 
   return (
     <InvoiceContext.Provider
@@ -485,7 +437,6 @@ export const InvoiceContextProvider = ({
         saveInvoice,
         deleteInvoice,
         exportInvoiceAs,
-        importInvoice,
       }}
     >
       {children}
