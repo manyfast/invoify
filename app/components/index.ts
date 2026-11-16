@@ -37,6 +37,7 @@ import InvoiceDetails from "./invoice/form/sections/InvoiceDetails";
 import Items from "./invoice/form/sections/Items";
 import PaymentInformation from "./invoice/form/sections/PaymentInformation";
 import InvoiceSummary from "./invoice/form/sections/InvoiceSummary";
+import ImportJsonButton from "./invoice/form/sections/ImportJsonButton";
 
 // * Actions
 import PdfViewer from "./invoice/actions/PdfViewer";
@@ -69,25 +70,6 @@ import InvoiceExportModal from "./modals/invoice/InvoiceExportModal";
 
 // Custom Selectors
 import SavedInvoicesList from "./modals/invoice/components/SavedInvoicesList";
-
-// Signature
-import SignatureModal from "./modals/signature/SignatureModal";
-
-/*
- * Signature / Tabs
- *
- * DrawSignature is deliberately NOT re-exported here. This barrel is imported
- * by nearly every component, so a static export of the drawing tab pulled
- * react-signature-canvas and signature_pad into the initial client bundle even
- * though the canvas only ever renders inside the signature modal. SignatureModal
- * loads it through next/dynamic from its own path instead.
- */
-import TypeSignature from "./modals/signature/tabs/TypeSignature";
-import UploadSignature from "./modals/signature/tabs/UploadSignature";
-
-// Signature / Components
-import SignatureColorSelector from "./modals/signature/components/SignatureColorSelector";
-import SignatureFontSelector from "./modals/signature/components/SignatureFontSelector";
 
 // Alerts
 import NewInvoiceAlert from "./modals/alerts/NewInvoiceAlert";
@@ -144,11 +126,7 @@ export {
     Subheading,
     InvoiceLoaderModal,
     InvoiceExportModal,
-    SignatureModal,
-    TypeSignature,
-    UploadSignature,
-    SignatureColorSelector,
-    SignatureFontSelector,
+    ImportJsonButton,
     NewInvoiceAlert,
     DynamicInvoiceTemplate,
     DevDebug,
