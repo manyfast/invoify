@@ -21,7 +21,6 @@ import SingleItem from "./invoice/form/SingleItem";
 import Charges from "./invoice/form/Charges";
 import PartyPicker from "./invoice/form/PartyPicker";
 import PaymentTermPresets from "./invoice/form/PaymentTermPresets";
-import AutosaveIndicator from "./invoice/form/AutosaveIndicator";
 import TemplateGallery from "./invoice/form/TemplateGallery";
 import VoiceInput from "./invoice/form/VoiceInput";
 
@@ -100,7 +99,6 @@ export {
     Charges,
     PartyPicker,
     PaymentTermPresets,
-    AutosaveIndicator,
     TemplateGallery,
     VoiceInput,
     WizardNavigation,

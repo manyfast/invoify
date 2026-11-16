@@ -35,7 +35,6 @@ import {
   GENERATE_PDF_API,
   SHORT_DATE_OPTIONS,
   LOCAL_STORAGE_INVOICE_DRAFT_KEY,
-  DRAFT_SAVE_DEBOUNCE_MS,
   WARM_BROWSER_API,
 } from "@/lib/variables";
 
@@ -56,10 +55,6 @@ const defaultInvoiceContext = {
   invoicePdfLoading: false,
   savedInvoices: [] as InvoiceType[],
   pdfUrl: null as string | null,
-  /** Timestamp of the last successful draft write, for the autosave indicator. */
-  draftSavedAt: null as number | null,
-  /** True while edits are sitting in the debounce window, unwritten. */
-  draftPending: false,
   onFormSubmit: (values: InvoiceType) => {},
   newInvoice: () => {},
   generatePdf: async (data: InvoiceType) => {},
@@ -141,74 +136,6 @@ export const InvoiceContextProvider = ({
     return () => controller.abort();
   }, []);
 
-  /**
-   * Draft autosave.
-   *
-   * This used to `JSON.stringify` the entire invoice inside the `watch`
-   * callback — i.e. on every keystroke, synchronously. The invoice carries
-   * `details.invoiceLogo`, a base64 data URL allowed up to 3,000,000
-   * characters, so with a logo uploaded each character typed serialised
-   * megabytes on the main thread. That was the single largest source of the
-   * typing lag, and it was also what made modals feel slow: they open while
-   * the user is mid-interaction, so the two costs landed together.
-   *
-   * Now the latest value is parked in a ref and written on a trailing timer.
-   * The flush also runs when the tab is hidden or unloaded, so nothing is lost
-   * if the user leaves inside the debounce window.
-   */
-  const [draftSavedAt, setDraftSavedAt] = useState<number | null>(null);
-  const [draftPending, setDraftPending] = useState(false);
-  const pendingDraftRef = useRef<unknown>(null);
-
-  /*
-   * Encryption makes this async, which costs one guarantee worth naming: a tab
-   * killed inside the 600ms debounce may not finish the write, where the old
-   * synchronous setItem would have. The visibilitychange-to-hidden flush below
-   * is unaffected and fires on every ordinary way of leaving a page, so the
-   * loss window is narrow.
-   */
-  const flushDraft = useCallback(() => {
-    if (pendingDraftRef.current === null) return;
-    const payload = pendingDraftRef.current;
-    pendingDraftRef.current = null;
-
-    void writeSecure(LOCAL_STORAGE_INVOICE_DRAFT_KEY, payload).then((ok) => {
-      // A false result is quota, disabled storage, or no usable key. The draft
-      // is a convenience, not a guarantee, so a failure must not break editing
-      // — but it must not report "Saved" either.
-      if (ok) setDraftSavedAt(Date.now());
-    });
-
-    setDraftPending(false);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    let timer: ReturnType<typeof setTimeout> | null = null;
-
-    const subscription = watch((value) => {
-      pendingDraftRef.current = value;
-      setDraftPending(true);
-
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(flushDraft, DRAFT_SAVE_DEBOUNCE_MS);
-    });
-
-    // `pagehide` rather than `unload`, which is ignored on mobile Safari and
-    // blocks the back/forward cache everywhere else.
-    const onHide = () => flushDraft();
-    window.addEventListener("pagehide", onHide);
-    document.addEventListener("visibilitychange", onHide);
-
-    return () => {
-      subscription.unsubscribe();
-      if (timer) clearTimeout(timer);
-      window.removeEventListener("pagehide", onHide);
-      document.removeEventListener("visibilitychange", onHide);
-      flushDraft();
-    };
-  }, [watch, flushDraft]);
 
   /*
    * Editing returns you to the live preview.
@@ -548,8 +475,6 @@ export const InvoiceContextProvider = ({
         invoicePdfLoading,
         savedInvoices,
         pdfUrl,
-        draftSavedAt,
-        draftPending,
         onFormSubmit,
         newInvoice,
         generatePdf,
