@@ -16,7 +16,7 @@ import type { InvoiceType } from "@/types";
  */
 const TRAILING_DIGITS = /^(.*?)(\d+)(\D*)$/;
 
-export const FALLBACK_INVOICE_NUMBER = "INV-A7";
+export const FALLBACK_INVOICE_NUMBER = "INV-A8";
 
 export function incrementInvoiceNumber(previous: string): string {
     const trimmed = previous.trim();
