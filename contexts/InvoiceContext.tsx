@@ -27,7 +27,6 @@ import { exportInvoice } from "@/services/invoice/client/exportInvoice";
 import { InvoiceSchema } from "@/lib/schemas";
 
 // Helpers
-import { nextInvoiceNumber } from "@/lib/invoiceNumber";
 
 // Variables
 import {
@@ -194,19 +193,11 @@ export const InvoiceContextProvider = ({
    * Generates a new invoice.
    */
   const newInvoice = () => {
-    /*
-     * Suggest the next number rather than leaving the field blank.
-     *
-     * Derived from the most recent saved invoice, preserving whatever scheme
-     * it used — INV0007 -> INV0008, 2026-14 -> 2026-15. It is only a
-     * suggestion: the field stays a normal editable input, because an invoice
-     * number is a legal identifier and people have their own conventions.
-     */
     reset({
       ...FORM_DEFAULT_VALUES,
       details: {
         ...FORM_DEFAULT_VALUES.details,
-        invoiceNumber: nextInvoiceNumber(savedInvoices),
+        invoiceNumber: "",
       },
     });
     setInvoicePdf(new Blob());
